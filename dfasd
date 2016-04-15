@@ -1,0 +1,83 @@
+/**
+ * Created by Bharat on 01/06/2014.
+ */
+
+
+
+
+'use strict';
+
+
+angular.module('backoffice').directive("adppdf", function() {
+
+       // var url = "http://localhost:9080/backoffice-rest-api/certification";
+        return {
+            restrict: 'E',
+
+            templateUrl: function(element, attr) {
+                return 'vendor/pdfjs/viewer.html'
+            },
+            controller: ['$scope', '$http','url', function($scope, $http,urll) {
+                $scope.getImageDetails = function() {
+                    $http({
+                        method: 'get',
+                        url: urll + "/certifications/getimagedetails"
+                    }).success(function(data) {
+
+                       
+                        $scope.imageurl = urll;
+                        $scope.imageData = data;
+                        if(data.imageId) {
+
+                          //  console.log(data.fileValid);
+                            if(data.fileValid== true)
+                            {
+                                $scope.weather = data.imageId;
+                              //  console.log($scope.weather);
+                                $scope.MessageFlag = false;
+                                $scope.keyInFlag=false;
+                            }
+                           else
+                            {
+
+                                $scope.keyInMesssage="Problem occured in loading the file click on PROBELM QUEUE for next certificate";
+                                $scope.weather="00";
+                                $scope.keyInFlag=true;
+                               // console.log(data.fileValid +" from dateadsa");
+
+                            }
+
+
+                        }
+                        else{
+
+                            $scope.certAvailabilityMessage="There were no certificates to be keyed in.";
+                            $scope.weather="00";
+                            $scope.CertAvailability=true;
+                            $scope.keyinvisiblecheck = "hide";
+                        }
+                    });
+                }
+            }],
+            link: function(scope, iElement, iAttrs, ctrl) {
+
+                scope.getImageDetails();
+              //  console.log(iAttrs.pdfurl);
+               // console.log(scope.weather);
+            //    scope.urltoload='vendor/pdfjs/web/viewer.html?pdftoload='+iAttrs.pdfurl;
+
+                scope.$watch('weather', function(newVal) {
+                        if(newVal) {
+                           
+                            scope.urltoload = 'vendor/pdfjs/web/viewer.html?pdftoload=' + scope.imageurl + '/certifications/loadimage/' + scope.weather;
+                            
+                        }
+
+                }
+                );
+
+            }
+
+        }
+    }
+);
