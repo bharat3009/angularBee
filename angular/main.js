@@ -1,9 +1,9 @@
 var feedbackApp = angular.module('myApp', ['ngRoute', 'myControllers', 'myServices', 'ngFileUpload', 'ui.bootstrap', 'ngAutocomplete']);
 
-feedbackApp.constant('userConst', 'http://localhost:8088/SSR/user/');
-feedbackApp.constant('commentConst', 'http://localhost:8088/SSR/comments/');
-feedbackApp.constant('areaConst', 'http://localhost:8088/SSR/area/');
-feedbackApp.constant('commentemotionConst', 'http://localhost:8088/SSR/commentemotion/');
+feedbackApp.constant('userConst', 'http://hb-env.us-east-1.elasticbeanstalk.com/user/');
+feedbackApp.constant('commentConst', 'http://hb-env.us-east-1.elasticbeanstalk.com/comments/');
+feedbackApp.constant('areaConst', 'http://hb-env.us-east-1.elasticbeanstalk.com/area/');
+feedbackApp.constant('commentemotionConst', 'http://hb-env.us-east-1.elasticbeanstalk.com/commentemotion/');
 
 
 feedbackApp.config(['$routeProvider',

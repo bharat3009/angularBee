@@ -689,6 +689,12 @@ list-style-type: none;
     border-color: #cccc00
 }
 
+.btn-primarylike {
+    color: #000000;
+    background-color: #ffffff;
+    border-color: #ffffff
+}
+
 .floating-label-form-group {
     position: relative;
     margin-bottom: 0;
@@ -714,5 +720,5 @@ body {
 }
 
 .likeactive{
-    background-color: #ffffcc;
+    background-color: #cccc00;
 }

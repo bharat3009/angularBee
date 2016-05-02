@@ -50,11 +50,11 @@ feedbackControllers.controller('commentsController', ['$scope', '$window', '$htt
 
 
                         if(sub[1] == "jpg" || sub[1] == "png" || sub[1] == "jpeg" || sub[1] == "gif"){
-                            file = "<img src='http://localhost:8088/SSR/"+ value.filepath+"' style='max-height:70px'/>"
+                            file = "<img src='http://hb-env.us-east-1.elasticbeanstalk.com/"+ value.filepath+"' style='max-height:70px'/>"
                         }
                         else{
                             /* file = "<video src='http://feedbacktool-env.elasticbeanstalk.com/"+ value.filepath+"' height='100' autoplay></video>"*/
-                            file = " <video width='150' controls>  <source src='http://localhost:8088/SSR/"+ value.filepath+"'></video>"
+                            file = " <video width='150' controls>  <source src='http://hb-env.us-east-1.elasticbeanstalk.com/"+ value.filepath+"'></video>"
                         }
 
                         a.push({

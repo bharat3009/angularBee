@@ -3,14 +3,17 @@
  */
 'use strict';
 
-feedbackControllers.controller('homeController', ['$scope', 'Upload', '$timeout', '$window', '$http', 'getSession', 'addComments', 'uploadFile', 'getallmaincommentsbyarea','getallmaincommentsbyuser', 'areaValues', 'getAllCommentEmotions','emotion',
-    function ($scope, Upload, $timeout, $window, $http, getSession, addComments, uploadFile, getallmaincommentsbyarea,getallmaincommentsbyuser, areaValues, getAllCommentEmotions, emotion) {
+feedbackControllers.controller('homeController', ['$scope', 'Upload', '$timeout', '$window', '$http', 'getSession', 'addComments', 'uploadFile', 'getallmaincommentsbyarea','getallmaincommentsbyuser', 'areaValues', 'getAllCommentEmotions','emotion', 'getallglobalcommentsbyuser',
+    function ($scope, Upload, $timeout, $window, $http, getSession, addComments, uploadFile, getallmaincommentsbyarea,getallmaincommentsbyuser, areaValues, getAllCommentEmotions, emotion, getallglobalcommentsbyuser) {
 
         var filePath;
         var userIds;
         var areaIds;
         var homeComments;
         var presentAction;
+        var mainCommentId = 0;
+        var showNameCheckBox;
+        
         $scope.commentsDataOne = "";
         $scope.commentsData = "";
         $scope.commentEmotions = "";
@@ -30,10 +33,10 @@ feedbackControllers.controller('homeController', ['$scope', 'Upload', '$timeout'
         getSession.get(function (response) {
             userIds = response.data.userId;
             areaIds = response.data.areaId;
-            $scope.getCommentEmotion();
+            //$scope.getCommentEmotion();
             $scope.getCommentData(areaIds, opposite);
             $scope.getAreaData();
-           
+            
             
 
             $scope.uploadFiles = function (file, errFiles) {
@@ -42,7 +45,7 @@ feedbackControllers.controller('homeController', ['$scope', 'Upload', '$timeout'
                 $scope.errFile = errFiles && errFiles[0];
                 if (file) {
                     file.upload = Upload.upload({
-                        url: 'http://localhost:8088/SSR/comments/uploadfile?file=',
+                        url: 'http://hb-env.us-east-1.elasticbeanstalk.com/comments/uploadfile?file=',
                         data: {file: file}
                     }).then(function (response) {
                         //alert('Success ' + response.config.data.file.name + ' uploaded. Response: ' + JSON.stringify(response.data));
@@ -75,18 +78,23 @@ feedbackControllers.controller('homeController', ['$scope', 'Upload', '$timeout'
                     className: "blue-with-image-2",
                     content: ''
                 });
-                console.log($scope.commentarea)
+                console.log($scope.showMyNameFlag)
                 console.log($("#commentsData").val());
                 if (filePath) {
                     addComments.save({
                         comments: $("#commentsData").val(),
                         filePath: filePath,
                         userId: userIds,
-                        areaId: areaIds
+                        areaId: areaIds,
+                        mainCommentId: mainCommentId,
+                        showMyName: 'Y'
                     }, function (data) {
                         if (data.message == "GA_TRANSACTION_OK") {
                             $("#commentsData").val("");
                             $("#submitClick").val("");
+                            $scope.f = '';
+                            $scope.errFile = '';
+                            $scope.buttonshow = false;
                             $.toaster({priority: "success", title: "Success", message: "Comment Added"});
                             $scope.getCommentData(areaIds, opposite);
                         }
@@ -105,15 +113,18 @@ feedbackControllers.controller('homeController', ['$scope', 'Upload', '$timeout'
                 } else {
                     addComments.save({
                         comments: $("#commentsData").val(),
-                        filePath: "comments/NoImage.jpg",
+                        filePath: "images/NoImage.jpg",
                         userId: userIds,
-                        areaId: areaIds
+                        areaId: areaIds,
+                        mainCommentId: mainCommentId,
+                        showMyName: 'Y'
                     }, function (data) {
                         if (data.message = "GA_TRANSACTION_OK") {
                             $("#commentsData").val("");
                             $("#submitClick").val("");
                             //$.toaster({priority: "success", title: "Success", message: "File Uploaded"});
                             $scope.getCommentData(areaIds, opposite);
+                            $scope.buttonshow = false;
                         }
                         else if (data.message = "GA_MANDATORY_PARAMETERS_NOT_SET") {
                             $.loader('close');
@@ -269,6 +280,9 @@ feedbackControllers.controller('homeController', ['$scope', 'Upload', '$timeout'
             $scope.homeshowpar = false;
             $scope.globalshowpar = true;
             $scope.historyshowpar = false;
+              var mycomments = getallglobalcommentsbyuser.get({userId: userIds, userTime: opposite}, function(data){
+                $scope.commentsDataOne = data.data;
+            });
         }
           
           $scope.getCommentEmotion = function(){
@@ -333,6 +347,16 @@ feedbackControllers.controller('homeController', ['$scope', 'Upload', '$timeout'
                     consle.log("unliked");
              });
          }
+         
+         $scope.showNameCheckBox = function() { 
+             console.log("asdfasdf" + $scope.showMyNameFlag);
+             if($scope.showMyNameFlag){
+                 showNameCheckBox = 'Y'
+             }else {
+                 showNameCheckBox = 'N'
+             }
+             console.log("showNameCheckBox " + showNameCheckBox );
+         };
           
           
           

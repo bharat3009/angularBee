@@ -12,7 +12,14 @@ feedbackServices.factory('login', ['$resource','userConst',
 
 feedbackServices.factory('newlogin', ['$resource','userConst',
     function($resource,userConst){
-        return $resource(userConst + ':verb', {verb:'newAuth', username:'@username',password:'@password', area: '@area'}, {
+        return $resource(userConst + ':verb', {verb:'newAuth', username:'@username',password:'@password', area: '@area', showName: '@showName'}, {
+            query: { method: "GET"}
+        });
+    }]);
+
+feedbackServices.factory('availability', ['$resource','userConst',
+    function($resource,commentConst){
+        return $resource(commentConst + ':verb', {verb:'availability'}, {
             query: { method: "GET"}
         });
     }]);

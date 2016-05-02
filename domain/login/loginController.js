@@ -3,10 +3,12 @@
  */
 'use strict';
 
-feedbackControllers.controller('loginController', ['$scope', '$window', '$http', 'login', 'newlogin', 'addSession',
-    function ($scope, $window, $http, login, newlogin, addSession) {
+feedbackControllers.controller('loginController', ['$scope', '$window', '$http', 'login', 'newlogin', 'addSession', 'availability',
+    function ($scope, $window, $http, login, newlogin, addSession, availability) {
         $scope.loginform = true;
         $scope.areaSearch= false;
+        
+        var userNamesListTotal = '';
         
          $scope.areaBarSearch = '';
          $scope.options1 = {
@@ -19,6 +21,13 @@ feedbackControllers.controller('loginController', ['$scope', '$window', '$http',
             console.log("newusersearch");
             $scope.loginform = false;
             $scope.areaSearch= true;
+        };
+        
+        $scope.userNameList = function(){
+            availability.get(function(response){
+                userNamesListTotal = response.data;
+            
+            });
         };
         
         
@@ -58,7 +67,7 @@ feedbackControllers.controller('loginController', ['$scope', '$window', '$http',
                 content: ''
             });
             console.log("area" + $scope.areaBarSearch);
-            newlogin.get({username: $scope.username, password: $scope.password, area: $scope.areaBarSearch}, function (response) {
+            newlogin.get({username: $scope.username, password: $scope.password, area: $scope.areaBarSearch, showName: $scope.showName}, function (response) {
                 if (response.message == "GA_TRANSACTION_OK") {
                     $.loader('close');
                     addSession.save(response, function () {
@@ -96,5 +105,27 @@ feedbackControllers.controller('loginController', ['$scope', '$window', '$http',
                 $.toaster({priority: "danger", title: "Message", message: "Please enter username or password"});
             });
         };
+        
+        $scope.showUserName = function(){
+            console.log("in ths hsow ");
+            if($scope.showName != null){
+                    $scope.availablewarn = false;
+                    $scope.unavailablewarn = false;
+                    angular.forEach(userNamesListTotal, function(value, key){
+                        console.log(value + "uer" + $scope.showName);
+                        if(value == $scope.showName){
+                             console.log(value);
+                            $scope.unavailablewarn =  true;
+                            $scope.userName = '';
+                        }
+                    });
+                     console.log($scope.availablewarn);
+                    if($scope.unavailablewarn == false){
+                         console.log($scope.availablewarn);
+                        $scope.availablewarn = true;
+                    }
+            }
+            
+        }
                          
     }]);
